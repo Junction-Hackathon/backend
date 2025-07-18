@@ -4,6 +4,8 @@ import { ConfigService } from '@nestjs/config';
 import { QUEUE_NAME } from 'src/common/constants/queues';
 import { AppConfig } from 'src/config/interfaces/app-config.interface';
 import { SearchModule } from 'src/search/search.module';
+import { FileProcessor } from './file/file.processor';
+import { CloudinaryWrapperService } from 'src/cloudinary/cloudinary.service';
 
 @Module({
   imports: [
@@ -37,5 +39,6 @@ import { SearchModule } from 'src/search/search.module';
     ),
     SearchModule,
   ],
+  providers: [FileProcessor, CloudinaryWrapperService],
 })
 export class QueueModule {}

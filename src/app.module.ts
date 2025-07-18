@@ -20,8 +20,10 @@ import { NotificationModule } from './notification/notification.module';
 import { SacrificeVideoModule } from './sacrifice-video/sacrifice-video.module';
 import { SacrificerSacrificesCountModule } from './sacrificer-sacrifices-count/sacrificer-sacrifices-count.module';
 import { DonationModule } from './donation/donation.module';
-import { CloudinaryService } from './cloudinary/cloudinary.service';
-import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { CloudinaryService } from 'nestjs-cloudinary';
+import { CloudinaryModule } from 'nestjs-cloudinary';
+import { TrackingModule } from './tracking/tracking.module';
+import { TrackingModule } from './tracking/tracking.module';
 @Module({
   imports: [
     ThrottlerModule.forRoot({
@@ -41,6 +43,7 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
       load: [appConfig],
     }),
     AuthenticationModule,
+    CloudinaryModule,
     UserModule,
     EmailModule,
     HealthModule,
@@ -54,6 +57,7 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
     QueueModule,
     DonationModule,
     CloudinaryModule,
+    TrackingModule,
   ],
   controllers: [AppController],
   providers: [AppService, CloudinaryService],

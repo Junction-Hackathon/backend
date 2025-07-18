@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CloudinaryModule } from 'nestjs-cloudinary';
 import { config } from 'process';
-import { CloudinaryWrapperServiec } from './cloudinary.service';
+import { CloudinaryWrapperService } from './cloudinary.service';
 
 @Module({
   imports: [
@@ -12,6 +12,6 @@ import { CloudinaryWrapperServiec } from './cloudinary.service';
       }),
     }),
   ],
-  providers:[CloudinaryWrapperService]
+  providers: [CloudinaryWrapperService],
 })
 export class CloudinaryModuleWrapper {}
