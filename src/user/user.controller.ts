@@ -1,8 +1,11 @@
-import { Controller, Get, Request } from '@nestjs/common';
+import { Controller, Get, Request, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ExtendedRequest } from 'src/authentication/types/extended-req.type';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { UserResponseDto } from './dto/res/user-response.dto';
+import { AcessTokenGuard } from 'src/authentication/guards/access-token.guard';
+@UseGuards(AcessTokenGuard)
+
 
 @Controller('user')
 export class UserController {
@@ -15,6 +18,7 @@ export class UserController {
   })
   @Get('me')
   getUserInfo(@Request() req: ExtendedRequest) {
+
     return this.userService.findById(req.user.id);
   }
 }

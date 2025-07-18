@@ -58,7 +58,7 @@ async function bootstrap() {
     //getTokenFromRequest: (req) => req.headers['x-csrf-token'], // A function that returns the token from the request
   };
   const { doubleCsrfProtection } = doubleCsrf(opts);
-//  app.use(doubleCsrfProtection);
+  //  app.use(doubleCsrfProtection);
   //
   app.useGlobalInterceptors(new LoggerInterceptor());
   // //PIPES
@@ -74,6 +74,7 @@ async function bootstrap() {
   // app.useGlobalFilters(new CustomWsExceptionFilter());
   //app.useGlobalFilters(new ElasticSearchExceptionFilter()); //TODO:figure out what error to catch
   //--
+  await app.startAllMicroservices();
   app.enableShutdownHooks();
   //Those to are for handling the shutdown of the server
   process.on('SIGINT', () => {
