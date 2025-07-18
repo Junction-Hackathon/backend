@@ -16,6 +16,7 @@ import { UpdateSacrificeDto } from './dtos/update-sacrifice.dto';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Roles } from 'src/authentication/decorators/role.decorator';
 import { UserRoleGuard } from 'src/authentication/guards/userRole.Guard';
+import { USER } from 'src/authentication/decorators/user.decorartor';
 
 @ApiTags('sacrifice')
 @Controller('sacrifice')
@@ -46,6 +47,11 @@ export class SacrificeController {
   @ApiResponse({ status: 200, description: 'Return the sacrifice.' })
   findOne(@Param('id') id: string) {
     return this.sacrificeService.findOne(id);
+  }
+  @Roles('DBA7')
+  @Get('donators')
+  findDonators(@USER('id') userId: string) {
+    return this.sacrificeService.getCurrentExcutorDonators(userId);
   }
 
   @Patch(':id')
@@ -83,6 +89,6 @@ export class SacrificeController {
     @Param('sacrificerId') sacrificerId: string,
     @Query('slayedAt') slayedAt: Date,
   ) {
-    return this.sacrificeService.assignSacrificer(id, sacrificerId, slayedAt);
+    return this.sacrificeService.sacrifice(id, sacrificerId, slayedAt);
   }
 }

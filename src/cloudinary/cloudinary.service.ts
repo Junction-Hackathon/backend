@@ -10,7 +10,7 @@ export class CloudinaryWrapperService {
   constructor(private readonly cloudService: CloudinaryService) {}
 
   async uploadImage(file: Express.Multer.File, options: UploadingOptions) {
-   const folder = options.year.toString()
+    const folder = options.year.toString();
 
     return this.cloudService.uploadFile(file, {
       folder: folder || undefined,

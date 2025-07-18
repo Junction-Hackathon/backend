@@ -66,10 +66,10 @@ export class AuthenticationService {
         }),
       ]);
 
+      this.logger.log('Authed user')
       return {
         ok: true,
         value: {
-          //TODO : add jwt token generation logic here
           accessToken, // Replace with actual token generation logic
           refreshToken, // Replace with actual token generation logic
           user: user,

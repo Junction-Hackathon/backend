@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateSacrificerSacrificesCountDto } from './dtos/create-sacrificer-sacrifices-count.dto';
 import { UpdateSacrificerSacrificesCountDto } from './dtos/update-sacrificer-sacrifices-count.dto';
+import { async } from 'rxjs';
 
 @Injectable()
 export class SacrificerSacrificesCountService {
@@ -10,10 +11,28 @@ export class SacrificerSacrificesCountService {
   async create(
     createSacrificerSacrificesCountDto: CreateSacrificerSacrificesCountDto,
   ) {
-    return this.prisma.sacrificerSacrificesCount.create({
-      data: createSacrificerSacrificesCountDto,
-    });
-  }
+    return this.prisma.$transaction(async (tx) => {
+      const sacrificesToUpdate = await tx.sacrifice.findMany({
+        where: { sacrificedById: null },
+        orderBy: { createdAt: 'asc' },
+        take: createSacrificerSacrificesCountDto.count, // x
+        select: { id: true },
+      });
+
+      // 2. Update them individually (or with Promise.all if you prefer)
+      for (const sacrifice of sacrificesToUpdate) {
+        await tx.sacrifice.update({
+          where: { id: sacrifice.id },
+          data: {
+            sacrificedById: createSacrificerSacrificesCountDto.sacrificerId,
+          },
+        });
+      }
+      return tx.sacrificerSacrificesCount.create({
+        data: createSacrificerSacrificesCountDto,
+      });
+    })
+  } 
 
   async findAll() {
     return this.prisma.sacrificerSacrificesCount.findMany();

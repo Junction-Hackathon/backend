@@ -2,11 +2,8 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
-import { BullModule } from '@nestjs/bullmq';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule, } from '@nestjs/config';
 import appConfig from './config/app.config';
-import { AppConfig } from './config/interfaces/app-config.interface';
-import { QUEUE_NAME } from './common/constants/queues';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { UserModule } from './user/user.module';
 import { ThrottlerModule } from '@nestjs/throttler';
@@ -20,9 +17,6 @@ import { NotificationModule } from './notification/notification.module';
 import { SacrificeVideoModule } from './sacrifice-video/sacrifice-video.module';
 import { SacrificerSacrificesCountModule } from './sacrificer-sacrifices-count/sacrificer-sacrifices-count.module';
 import { DonationModule } from './donation/donation.module';
-import { CloudinaryService } from 'nestjs-cloudinary';
-import { CloudinaryModule } from 'nestjs-cloudinary';
-import { TrackingModule } from './tracking/tracking.module';
 import { TrackingModule } from './tracking/tracking.module';
 @Module({
   imports: [
@@ -43,23 +37,20 @@ import { TrackingModule } from './tracking/tracking.module';
       load: [appConfig],
     }),
     AuthenticationModule,
-    CloudinaryModule,
     UserModule,
     EmailModule,
     HealthModule,
-    QueueModule,
     PrismaModule,
     PaymentModule,
     SacrificeModule,
-    NotificationModule,
+    //NotificationModule,
     SacrificeVideoModule,
     SacrificerSacrificesCountModule,
     QueueModule,
     DonationModule,
-    CloudinaryModule,
     TrackingModule,
   ],
   controllers: [AppController],
-  providers: [AppService, CloudinaryService],
+  providers: [AppService],
 })
 export class AppModule {}

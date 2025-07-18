@@ -92,6 +92,7 @@ model SacrificerSacrificesCount {
   // Relationships
   sacrificer User @relation(fields: [sacrificerId], references: [id])
 
+@@unique([sacrificerId,year])
   @@map("sacrificerSacrficesCount")
 }
 
@@ -140,7 +141,6 @@ model Notification {
 enum UserRole {
   ORGANIZER
   DBA7
-  DRIVER
   DONOR
 }
 

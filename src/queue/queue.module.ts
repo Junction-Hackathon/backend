@@ -8,9 +8,11 @@ import { FileProcessor } from './file/file.processor';
 import { CloudinaryWrapperService } from 'src/cloudinary/cloudinary.service';
 import { NotificationProcessor } from './notification/notification.processor';
 import { NotificationService } from 'src/notification/notification.service';
+import { CloudinaryModuleWrapper } from 'src/cloudinary/cloudinary.module';
 
 @Module({
   imports: [
+    CloudinaryModuleWrapper,
     BullModule.forRootAsync({
       useFactory: (configService: ConfigService) => {
         const redisHost = configService.get<AppConfig['redis']['host']>(
@@ -41,6 +43,7 @@ import { NotificationService } from 'src/notification/notification.service';
     ),
     SearchModule,
   ],
-  providers: [FileProcessor, CloudinaryWrapperService, NotificationProcessor, NotificationService],
+
+  providers: [FileProcessor, NotificationProcessor, NotificationService],
 })
 export class QueueModule {}

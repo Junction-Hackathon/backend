@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateSacrificeDto } from './dtos/create-sacrifice.dto';
 import { UpdateSacrificeDto } from './dtos/update-sacrifice.dto';
@@ -26,16 +26,22 @@ export class SacrificeService {
     });
   }
 
+  async getCurrentExcutorDonators(excutorId: string) {
+    return this.prisma.sacrifice.findMany({
+      where: {
+        sacrificedById: excutorId,
+      },
+      include: {
+        donor: true,
+      },
+    });
+  }
   async remove(id: string) {
     return this.prisma.sacrifice.delete({ where: { id } });
   }
   //should be called when receiving kafka call on sacrifice
 
-  async assignSacrificer(
-    sacrificeId: string,
-    sacrificerId: string,
-    slayedAt: Date,
-  ) {
+  async sacrifice(sacrificeId: string, sacrificerId: string, slayedAt: Date) {
     return this.prisma.sacrifice.update({
       where: { id: sacrificeId },
       data: { sacrificedById: sacrificerId, slayedAt: slayedAt },

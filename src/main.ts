@@ -58,7 +58,7 @@ async function bootstrap() {
     //getTokenFromRequest: (req) => req.headers['x-csrf-token'], // A function that returns the token from the request
   };
   const { doubleCsrfProtection } = doubleCsrf(opts);
-  app.use(doubleCsrfProtection);
+//  app.use(doubleCsrfProtection);
   //
   app.useGlobalInterceptors(new LoggerInterceptor());
   // //PIPES

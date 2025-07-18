@@ -22,9 +22,10 @@ export class UserService {
   constructor(private readonly prismaService: PrismaService) {}
   async createUser(data: registerDto): Promise<User> {
     const hashedPassword = await generateHash(data.password);
+    const { confirmPassword, ...rest } = data;
     const createdUser = await this.prismaService.user.create({
       data: {
-        ...data,
+        ...rest,
         password: hashedPassword,
         role: 'DONOR',
       },
@@ -32,6 +33,7 @@ export class UserService {
     return createdUser;
   }
   findByEmail(email: string): Promise<User | null> {
+    console.log('finding user with mail '+email)
     return this.prismaService.user.findUnique({
       where: {
         email,

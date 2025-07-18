@@ -28,6 +28,9 @@ RUN pnpm run build
 
 # Give execution permissions
 
+ENV DATABASE_URL="postgresql://dba7:pass@db:5432/main?schema=public&connection_limit=15&pool_timeout=10&connect_timeout=30"
+#RUN pnpm dlx prisma migrate deploy
+
 # Expose the port the app runs on, here, I was using port 3000
 EXPOSE 3000
 

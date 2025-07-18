@@ -27,4 +27,9 @@ export default (): AppConfig => ({
       ), // 7 day
     },
   },
+  cloudinary: {
+    cloudName: 'dtgfobbl5',
+    apiKey: process.env.CLOUDINARY_API_KEY!,
+    apiSecret: process.env.CLOUDINARY_API_SECRET!,
+  },
 });

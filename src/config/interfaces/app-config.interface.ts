@@ -1,4 +1,5 @@
 import { AuthConfig } from './auth-config.interface';
+import { CloudinaryConfig } from './cloudinary-config.interface';
 import { MailConfig } from './mail-config.inteface';
 
 export interface AppConfig {
@@ -8,4 +9,5 @@ export interface AppConfig {
   };
   mail: MailConfig;
   auth: AuthConfig;
+  cloudinary:CloudinaryConfig
 }
