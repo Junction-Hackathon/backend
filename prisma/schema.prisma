@@ -146,8 +146,10 @@ enum UserRole {
 
 enum SacrificeStatus {
   pending
+  onWay
   delivred
   sacrifiedc
+  cancelled
 }
 
 enum VideoStatus {

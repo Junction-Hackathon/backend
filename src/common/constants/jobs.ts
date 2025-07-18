@@ -14,3 +14,9 @@ export const SEARACH_JOB_NAME = {
 export const MAIL_JOBS = {
   SEND_MAIL: 'send_mail',
 } as const;
+export const FILE_JOBS = {
+  SEND_FILE: 'send_file',
+} as const;
+export const NOTIFICATION_JOBS = {
+  SEND_NOTIFICATION: 'send_notification',
+} as const;

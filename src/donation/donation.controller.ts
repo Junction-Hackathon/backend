@@ -19,7 +19,6 @@ import {
 } from '@nestjs/swagger';
 import { DonationResponseDto } from './dto/donation-response.dto';
 
-@ApiTags('Donation')
 @Controller('donation')
 export class DonationController {
   constructor(private readonly donationService: DonationService) {}
