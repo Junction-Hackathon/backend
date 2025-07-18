@@ -9,6 +9,7 @@ import { NotificationProcessor } from './notification/notification.processor';
 import { NotificationService } from 'src/notification/notification.service';
 import { CloudinaryModuleWrapper } from 'src/cloudinary/cloudinary.module';
 import { SacrificeVideoModule } from 'src/sacrifice-video/sacrifice-video.module';
+import { AiVideoModule } from 'src/ai-video-processor/ai-video-upload.module';
 
 @Module({
   imports: [
@@ -36,13 +37,14 @@ import { SacrificeVideoModule } from 'src/sacrifice-video/sacrifice-video.module
 
       inject: [ConfigService],
     }),
-    forwardRef(() => SacrificeVideoModule),
     BullModule.registerQueue(
       ...Object.values(QUEUE_NAME).map((queueName) => ({
         name: queueName,
       })),
     ),
     SearchModule,
+
+    AiVideoModule,
   ],
 
   providers: [FileProcessor, NotificationProcessor, NotificationService],

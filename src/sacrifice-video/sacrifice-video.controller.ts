@@ -8,25 +8,27 @@ import {
 } from '@nestjs/common';
 import { SacrificeVideoService } from './sacrifice-video.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { memoryStorage } from 'multer';
-import { AuthGuard } from '@nestjs/passport';
 import { AcessTokenGuard } from 'src/authentication/guards/access-token.guard';
-import { User } from 'src/user/entities/user.entity';
-import { USER } from 'src/authentication/decorators/user.decorartor';
 import { UploadVideoDto } from './dtos/req/upload-vid.dto';
-import { ApiOkResponse, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiBody, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
+import { USER } from 'src/authentication/decorators/user.decorartor';
+import { UserRoleGuard } from 'src/authentication/guards/userRole.Guard';
 
-@UseGuards(AuthGuard, AcessTokenGuard)
+@UseGuards( AcessTokenGuard,UserRoleGuard)
 @Controller('sacrifice-video')
 export class SacrificeVideoController {
   constructor(private readonly sacrificeVideoService: SacrificeVideoService) {}
+
   @ApiOperation({
-    description:"Upload file once internet is on"
+    description: 'Upload file once internet is on',
   })
   @ApiOkResponse({
-    description:"A job id and a succes note" 
+    description: 'A job id and a succes note',
   })
-  @UseInterceptors(FileInterceptor('video', { storage: memoryStorage() }))
+  @ApiBody({
+    type: UploadVideoDto,
+  })
+  @UseInterceptors(FileInterceptor('video'))
   @Post()
   startProcessingVideo(
     @UploadedFile() file: Express.Multer.File,

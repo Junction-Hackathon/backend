@@ -1,7 +1,7 @@
 services:
   zookeeper:
     networks:
-        - app-network
+      - app-network
     image: confluentinc/cp-zookeeper:7.5.0
     container_name: zookeeper
     ports:
@@ -12,7 +12,7 @@ services:
 
   kafka:
     networks:
-        - app-network
+      - app-network
     healthcheck:
       test: ["CMD-SHELL", "kafka-topics --bootstrap-server localhost:9092 --list || exit 1"]
       interval: 10s
@@ -22,17 +22,19 @@ services:
     container_name: kafka
     ports:
       - "9092:9092"
+      - "19092:19092"
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
-      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,PLAINTEXT_INTERNAL://0.0.0.0:29092
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_INTERNAL://kafka:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT,PLAINTEXT_EXTERNAL:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,PLAINTEXT_INTERNAL://0.0.0.0:29092,PLAINTEXT_EXTERNAL://0.0.0.0:19092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_INTERNAL://kafka:29092,PLAINTEXT_EXTERNAL://10.42.0.174:19092
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT_INTERNAL
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
   kafka-ui:
-    networks: 
-       - app-network
+    networks:
+      - app-network
     image: provectuslabs/kafka-ui:latest
     container_name: kafka-ui
     ports:
@@ -43,11 +45,11 @@ services:
       KAFKA_CLUSTERS_0_NAME: local
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
       KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181
+
   server:
     image: portals-core-api
     build:
       context: .
-    # Set the environment to production for the production build and development for the development
     environment:
       NODE_ENV: developement
       TSC_WATCHFILE: UsePolling
@@ -70,16 +72,15 @@ services:
         condition: service_healthy
       search:
         condition: service_healthy
-
     command: >
       sh -c "pnpm dlx prisma migrate deploy &&
       pnpm run start:dev"
+
   db:
     networks:
       - app-network
     image: postgres:15-alpine
     restart: unless-stopped
-    
     environment:
       - POSTGRES_PASSWORD=pass
       - POSTGRES_USER=dba7
@@ -94,6 +95,7 @@ services:
       timeout: 5s
       retries: 10
       start_period: 20s
+
   redis:
     networks:
       - app-network
@@ -110,6 +112,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
   search:
     networks:
       - app-network
@@ -126,6 +129,7 @@ services:
       - ES_JAVA_OPTS=-Xms1g -Xmx1g
     ports:
       - '9200:9200'
+
 networks:
   app-network:
     driver: bridge

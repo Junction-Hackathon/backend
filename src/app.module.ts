@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
-import { ConfigModule, } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import appConfig from './config/app.config';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { UserModule } from './user/user.module';
@@ -13,7 +13,6 @@ import { QueueModule } from './queue/queue.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { PaymentModule } from './payment/payment.module';
 import { SacrificeModule } from './sacrifice/sacrifice.module';
-import { NotificationModule } from './notification/notification.module';
 import { SacrificeVideoModule } from './sacrifice-video/sacrifice-video.module';
 import { SacrificerSacrificesCountModule } from './sacrificer-sacrifices-count/sacrificer-sacrifices-count.module';
 import { DonationModule } from './donation/donation.module';

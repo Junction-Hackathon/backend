@@ -1,8 +1,5 @@
-import { Inject, Injectable } from '@nestjs/common';
+import {  Injectable } from '@nestjs/common';
 
-import { Multer } from 'multer';
-import { videoProcessorName } from './constants';
-import { ClientProxy } from '@nestjs/microservices';
 import { InjectQueue } from '@nestjs/bullmq';
 import { QUEUE_NAME } from 'src/common/constants/queues';
 import { Queue } from 'bullmq';
@@ -14,7 +11,6 @@ import { UploadVideoDto } from './dtos/req/upload-vid.dto';
 @Injectable()
 export class SacrificeVideoService {
   constructor(
-    @Inject(videoProcessorName) private readonly kafkaProducer: ClientProxy,
     @InjectQueue(QUEUE_NAME.FILE) private readonly FileQueue: Queue,
     private readonly prismaService: PrismaService,
   ) {}
@@ -22,7 +18,7 @@ export class SacrificeVideoService {
     video: Express.Multer.File,
     slayerId: string,
 
-    { sacrificeId}: UploadVideoDto,
+    { sacrificeId }: UploadVideoDto,
   ) {
     //save into db
     const updatedSac = await this.prismaService.sacrifice.update({
@@ -39,7 +35,6 @@ export class SacrificeVideoService {
         donor: true,
       },
     });
-
     const payload: SendFileDto = {
       fileBuffer: video.buffer.toString('base64'),
       year: new Date().getFullYear(),

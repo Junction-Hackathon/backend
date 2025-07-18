@@ -7,6 +7,6 @@ import { RedisModule } from 'src/redis/redis.module';
 @Module({
   controllers: [TrackingController],
   providers: [TrackingService, TrackingGateway],
-  imports:[RedisModule]
+  imports: [RedisModule],
 })
 export class TrackingModule {}
