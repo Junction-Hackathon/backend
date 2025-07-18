@@ -6,6 +6,8 @@ import { AppConfig } from 'src/config/interfaces/app-config.interface';
 import { SearchModule } from 'src/search/search.module';
 import { FileProcessor } from './file/file.processor';
 import { CloudinaryWrapperService } from 'src/cloudinary/cloudinary.service';
+import { NotificationProcessor } from './notification/notification.processor';
+import { NotificationService } from 'src/notification/notification.service';
 
 @Module({
   imports: [
@@ -39,6 +41,6 @@ import { CloudinaryWrapperService } from 'src/cloudinary/cloudinary.service';
     ),
     SearchModule,
   ],
-  providers: [FileProcessor, CloudinaryWrapperService],
+  providers: [FileProcessor, CloudinaryWrapperService, NotificationProcessor, NotificationService],
 })
 export class QueueModule {}

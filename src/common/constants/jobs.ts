@@ -17,3 +17,6 @@ export const MAIL_JOBS = {
 export const FILE_JOBS = {
   SEND_FILE: 'send_file',
 } as const;
+export const NOTIFICATION_JOBS = {
+  SEND_NOTIFICATION: 'send_notification',
+} as const;
