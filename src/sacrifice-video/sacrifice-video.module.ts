@@ -1,9 +1,10 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { SacrificeVideoService } from './sacrifice-video.service';
 import { SacrificeVideoController } from './sacrifice-video.controller';
 
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { videoProcessorName } from './constants';
+import { QueueModule } from 'src/queue/queue.module';
 @Module({
   imports: [
     ClientsModule.register([
@@ -16,13 +17,16 @@ import { videoProcessorName } from './constants';
             brokers: ['kafka:9092'],
           },
           consumer: {
+            allowAutoTopicCreation: true,
             groupId: 'VID_CONSUMERS',
           },
         },
       },
     ]),
+    forwardRef(() => QueueModule),
   ],
   controllers: [SacrificeVideoController],
   providers: [SacrificeVideoService],
+  exports: [ClientsModule],
 })
 export class SacrificeVideoModule {}

@@ -1,14 +1,14 @@
 import { BullModule } from '@nestjs/bullmq';
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { QUEUE_NAME } from 'src/common/constants/queues';
 import { AppConfig } from 'src/config/interfaces/app-config.interface';
 import { SearchModule } from 'src/search/search.module';
 import { FileProcessor } from './file/file.processor';
-import { CloudinaryWrapperService } from 'src/cloudinary/cloudinary.service';
 import { NotificationProcessor } from './notification/notification.processor';
 import { NotificationService } from 'src/notification/notification.service';
 import { CloudinaryModuleWrapper } from 'src/cloudinary/cloudinary.module';
+import { SacrificeVideoModule } from 'src/sacrifice-video/sacrifice-video.module';
 
 @Module({
   imports: [
@@ -36,6 +36,7 @@ import { CloudinaryModuleWrapper } from 'src/cloudinary/cloudinary.module';
 
       inject: [ConfigService],
     }),
+    forwardRef(() => SacrificeVideoModule),
     BullModule.registerQueue(
       ...Object.values(QUEUE_NAME).map((queueName) => ({
         name: queueName,
@@ -45,5 +46,6 @@ import { CloudinaryModuleWrapper } from 'src/cloudinary/cloudinary.module';
   ],
 
   providers: [FileProcessor, NotificationProcessor, NotificationService],
+  exports: [BullModule],
 })
 export class QueueModule {}

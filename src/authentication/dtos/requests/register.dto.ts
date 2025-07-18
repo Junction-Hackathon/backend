@@ -1,11 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEmail,
+  IsEnum,
   IsNotEmpty,
   IsString,
   IsStrongPassword,
 } from 'class-validator';
 import { Match } from './Match.decorator';
+import { UserRole } from '@prisma/client';
 
 export class registerDto {
   @ApiProperty({
@@ -31,6 +33,14 @@ export class registerDto {
   @IsString()
   @IsNotEmpty()
   phoneNumber: string;
+
+  @IsEnum(UserRole)
+  @ApiProperty({
+    enum: UserRole,
+    example: UserRole.ORGANIZER,
+    description: 'Role assigned to the user',
+  })
+  role: UserRole;
 
   @IsString()
   @ApiProperty({ description: 'the User first Name' })

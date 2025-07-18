@@ -148,7 +148,7 @@ enum SacrificeStatus {
   pending
   onWay
   delivred
-  sacrifiedc
+  sacrificed
   cancelled
 }
 

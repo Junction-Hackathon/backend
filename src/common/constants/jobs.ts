@@ -16,6 +16,7 @@ export const MAIL_JOBS = {
 } as const;
 export const FILE_JOBS = {
   SEND_FILE: 'send_file',
+  UPLOAD_SAC_VID: 'upload_sac_video',
 } as const;
 export const NOTIFICATION_JOBS = {
   SEND_NOTIFICATION: 'send_notification',

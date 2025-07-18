@@ -4,9 +4,15 @@ import { LocalGuard } from './guards/local.guard';
 import { USER } from './decorators/user.decorartor';
 import { User } from 'src/user/entities/user.entity';
 import { registerDto } from './dtos/requests/register.dto';
-import { ApiOkResponse, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiOkResponse,
+  ApiOperation,
+  ApiResponse,
+} from '@nestjs/swagger';
 import { AuthResponseDto } from './dtos/responses/auth-response.dto';
 import { RefreshTokenGuard } from './guards/refresh-token.guard';
+import { LoginDto } from './dtos/requests/login.dto';
 
 @Controller('authentication')
 export class AuthenticationController {
@@ -29,6 +35,9 @@ export class AuthenticationController {
     status: 400,
     description:
       'Bad Request. The request body is invalid or missing required fields.',
+  })
+  @ApiBody({
+    type: () => LoginDto,
   })
   async login(@USER() user: User) {
     return this.authenticationService.issueTokens(user);

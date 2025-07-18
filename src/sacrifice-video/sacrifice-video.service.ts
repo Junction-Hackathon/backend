@@ -3,14 +3,54 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Multer } from 'multer';
 import { videoProcessorName } from './constants';
 import { ClientProxy } from '@nestjs/microservices';
+import { InjectQueue } from '@nestjs/bullmq';
+import { QUEUE_NAME } from 'src/common/constants/queues';
+import { Queue } from 'bullmq';
+import { FILE_JOBS } from 'src/common/constants/jobs';
+import { SendFileDto } from 'src/queue/file/dtos/send-file.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { UploadVideoDto } from './dtos/req/upload-vid.dto';
 
 @Injectable()
 export class SacrificeVideoService {
   constructor(
     @Inject(videoProcessorName) private readonly kafkaProducer: ClientProxy,
+    @InjectQueue(QUEUE_NAME.FILE) private readonly FileQueue: Queue,
+    private readonly prismaService: PrismaService,
   ) {}
-  startAiProcessing(video: Express.Multer.File) {
+  async startAiProcessing(
+    video: Express.Multer.File,
+    slayerId: string,
+
+    { sacrificeId}: UploadVideoDto,
+  ) {
     //save into db
-    this.kafkaProducer.emit('video.process.start', video);
+    const updatedSac = await this.prismaService.sacrifice.update({
+      where: {
+        id: sacrificeId,
+        sacrificedById: slayerId,
+      },
+      data: {
+        status: 'sacrificed',
+        slayedAt: new Date(),
+      },
+      include: {
+        sacrificer: true,
+        donor: true,
+      },
+    });
+
+    const payload: SendFileDto = {
+      fileBuffer: video.buffer.toString('base64'),
+      year: new Date().getFullYear(),
+      slayer: updatedSac.sacrificer!,
+      donor: updatedSac.donor,
+    };
+
+    const job = await this.FileQueue.add(FILE_JOBS.SEND_FILE, payload);
+    return {
+      jobId: job.id,
+      message: 'Queued Succefully',
+    };
   }
 }

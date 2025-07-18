@@ -1,4 +1,9 @@
+import { UserResponseDto } from 'src/user/dto/res/user-response.dto';
+
 export class SendFileDto {
-  file: Express.Multer.File;
-  year:number
-} 
+  fileBuffer: string;
+  year: number;
+  donor: UserResponseDto;
+  slayer: UserResponseDto;
+}
+
