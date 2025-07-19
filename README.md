@@ -35,8 +35,9 @@ Messaging Queue	Kafka (Confluent Platform) + Zookeeper
 Queue Management	Redis + BullMQ
 Database ORM	Prisma ORM (PostgreSQL)
 Caching	Redis (ioredis integration)
-Storage	Wasabi Object Storage (via SDK)
+Cloud Storage 	Cloudinary  (via SDK)
 Auth	JWT + Role-Based Access Control
+Automatic video archivng into a cold storage after a 3 months of creation
 Realtime Layer	NestJS WebSocket Gateway + Redis Adapter
 AI Processing	External Python (REST + Kafka)
 Notification	Firebase Cloud Messaging, Twilio SMS
