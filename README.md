@@ -1,255 +1,233 @@
-# 🧪 NestJS Starter
-
-A scalable, production-ready NestJS boilerplate with batteries included. This starter is built for teams and individuals who want a robust backend setup with Redis, Elasticsearch, WebSockets, and more.
-
----
-
-## Status
-
-This project is currently in active development. Most features should be done in a day or two. Contributions are welcome!
-
-## 📖 Table of Contents
-
-* [🚀 Features](#-features)
-* [📂 Folder Structure](#-folder-structure)
-* [🛠️ Setup & Run](#-setup--run)
-* [🧪 Scripts](#-scripts)
-* [📖 API Documentation](#-api-documentation)
-* [📬 Mailer Setup](#-mailer-setup)
-* [⚙️ Background Jobs](#-background-jobs)
-* [🧠 Redis Usage](#-redis-usage)
-* [🌐 WebSockets](#-websockets)
-* [🔒 Security](#-security)
-* [❤️ Health Checks](#-health-checks)
-* [🐳 Docker Compose](#-docker-compose)
-* [🚄 Fastify Support](#-fastify-support)
-* [📦 License](#-license)
-* [🤝 Contributing](#-contributing)
-* [🧑‍💻 Author](#-author)
-* [📬 Contact](#-contact)
-
-## 🚀 Features
-
-* ✅ **Modular Configuration**: Centralized config management via `.env` and `ConfigModule`.
-* 🔐 **Authentication System**:
-
-  * Passport.js integration
-  * Built-in **JWT strategy**
-  * Easily extendable to add OAuth, local, etc.
-* 📦 **Elasticsearch**: Seamless integration for full-text search and analytics use-cases.
-* 🧰 **Utility Functions**: Common helper functions to keep your code DRY and clean.
-* 🧠 **Redis Integration** (via `ioredis`):
-
-  * Caching layer
-  * Pub/Sub support
-  * Redis Streams support for message/event queues
-* 🌐 **WebSocket Manager**:
-
-  * Centralized gateway
-  * **Redis adapter** for horizontal scaling
-  * User connections registered for **1-to-1 messaging**
-* 📬 **Mailing Module**: Easily plug in mailing services like SendGrid, Mailgun, or SMTP.
-* 🛡️ **Security**:
-
-  * CSRF protection (double-submit cookie strategy)
-  * Secure headers via `Helmet`
-  * **Rate Limiting** with `@nestjs/throttler`
-* 📚 **API Documentation**:
-
-  * Swagger auto-generated docs
-  * Beautiful UI powered by **Scalar**
-* 🎯 **Background Jobs**:
-
-  * Bull Module with Redis backend
-  * For tasks like email queues, notifications, etc.
-* 🔁 **Health Checks**:
-
-  * Exposed endpoint for service health & readiness using `@nestjs/terminus`
-* 📦 **Docker Compose Ready**:
-
-  * Includes services like Redis, Elasticsearch, and more
-* 📑 **Request & Response Logging**:
-
-  * Custom **interceptors** log HTTP traffic
-  * Extendable for audit logging or debugging
-
----
-
-## 📂 Folder Structure
-
-```
-src/
-├── authentication/
-│   ├── decorators/
-│   ├── dtos/
-│   ├── guards/
-│   ├── strategies/
-│   ├── types/
-│   ├── authentication.controller.ts
-│   ├── authentication.controller.spec.ts
-│   ├── authentication.module.ts
-│   └── authentication.service.ts
-│
-├── common/
-│   ├── constants/
-│   │   ├── jobs.ts
-│   │   └── queues.ts
-│   └── utils/
-│       ├── authentication/
-│       └── webSocket/
-│           ├── index.ts
-│           ├── json.utils.ts
-│           ├── object.utils.ts
-│           ├── query.utils.ts
-│           └── result.util.ts
-│
-├── config/
-├── redis/
-├── user/
-│
-├── app.controller.ts
-├── app.controller.spec.ts
-├── app.module.ts
-├── app.service.ts
-└── main.ts
-```
+🛠️ Backend Documentation – Qurbani Management System
+Overview
 
----
+The backend of the Qurbani Management System is a robust, production-ready NestJS microservice architecture built on a custom starter boilerplate that integrates Kafka, Redis, Prisma, and BullMQ. It leverages the full power of asynchronous messaging, offline-first strategies, and AI-powered processing, while providing secure and scalable services to support the high-throughput nature of Eid Qurbani operations.
+🧪 Powered by: NestJS Starter Boilerplate
 
-## 🛠️ Setup & Run
+The backend was bootstrapped using a custom NestJS Starter, offering:
 
-```bash
-# Clone the repo
-git clone https://github.com/your-org/nestjs-starter.git
-cd nestjs-starter
+    🔐 JWT Auth with Passport.js and multi-strategy support
 
-# Install dependencies
-npm install
+    🧠 Redis: Caching, Pub/Sub, Streams
 
-# Setup environment
-cp .env.example .env
+    🌐 WebSocket Gateway: Centralized, horizontally scalable via Redis
 
-# Run the app
-npm run start:dev
-```
+    📬 Mailer: SendGrid/Mailgun/SMTP ready
 
----
+    🔁 BullMQ: Background jobs with custom queues
 
-## 🧪 Scripts
+    📚 Swagger API Docs: Powered by Scalar
 
-| Script       | Description                   |
-| ------------ | ----------------------------- |
-| `start:dev`  | Start in development mode     |
-| `start:prod` | Build and start in production |
-| `test`       | Run unit tests                |
-| `lint`       | Lint your codebase            |
+    🛡️ Security: Helmet, CSRF, rate limiting
 
----
+    📊 Health Checks: Terminus support
 
-## 📖 API Documentation
+    🐳 Docker Compose: Redis, Elasticsearch, etc.
 
-Swagger is auto-generated at runtime and available at:
+    🚄 Optional Fastify Support
 
-```
-http://localhost:3000/api-docs
-```
+    🧰 Common utility functions and logging interceptors
 
-Beautiful UI powered by [Scalar](https://github.com/sdorra/swagger-ui-scalar).
+🏗️ Architectural Stack
+Layer	Technology
+Framework	NestJS (Microservices Mode)
+Messaging Queue	Kafka (Confluent Platform) + Zookeeper
+Queue Management	Redis + BullMQ
+Database ORM	Prisma ORM (PostgreSQL)
+Caching	Redis (ioredis integration)
+Storage	Wasabi Object Storage (via SDK)
+Auth	JWT + Role-Based Access Control
+Realtime Layer	NestJS WebSocket Gateway + Redis Adapter
+AI Processing	External Python (REST + Kafka)
+Notification	Firebase Cloud Messaging, Twilio SMS
+🔁 Kafka Topics & Event Flow
+video.initial-upload
 
----
+    Triggered after client requests video upload.
 
-## 📬 Mailer Setup
+    Job is offloaded via BullMQ to avoid long HTTP requests.
 
-Update your mailing provider details in the `.env` file:
+video.uploaded-preprocessed
 
-```env
-MAIL_HOST=smtp.example.com
-MAIL_PORT=587
-MAIL_USER=username
-MAIL_PASS=securepassword
-```
+    Triggered after BullMQ job uploads the video to Wasabi.
 
----
+    Consumed by AI service to begin processing.
 
-## ⚙️ Background Jobs
+video.processed-final
 
-Jobs are processed using **Bull** and stored in Redis. Define jobs under `common/constants/` and register them in the job queues.
+    After AI finishes processing, metadata and AI results are saved.
 
----
+    Backend updates video record and prepares client notification.
 
-## 🧠 Redis Usage
+notification.send
 
-You can use Redis for:
+    Sends push notifications or WhatsApp/SMS and logs it.
 
-* Caching
-* Pub/Sub (real-time messaging)
-* Redis Streams (event queues)
-* WebSocket scaling
+🎬 AI Integration Pipeline
+1. Enhancement & Privacy
 
-Configured in `redis/` module.
+    Denoise & upscale video → filename_enhanced.mp4
 
----
+    Optional blurring of blood and sensitive areas → filename_blurred.mp4
 
-## 🌐 WebSockets
+2. Scene Validation
 
-Supports **single-user messaging** and **distributed WebSocket server** setup using Redis adapter. Define events in `common/utils/webSocket/`.
+    Extract frames @ 1fps, detect presence of:
 
----
+        🧍 Person
 
-## 🔒 Security
+        🐑 Animal
 
-This starter includes:
+        🔪 Knife
 
-* Helmet for HTTP header protection
-* Double CSRF strategy using cookie and token
-* Rate limiting using `@nestjs/throttler`
+    Mark video as authentic if all are detected in the same frame
 
----
+3. Donor Name Verification
 
-## ❤️ Health Checks
+    Audio transcribed using Whisper
 
-* Powered by `@nestjs/terminus`
-* Endpoint: `/health`
-* Checks Redis, Elasticsearch, Database, etc.
+    Fuzzy-matched with expected donor name
 
----
+    Returns:
 
-## 🐳 Docker Compose
+        Match status
 
-Use `docker-compose.yml` to spin up:
+        Confidence score
 
-* Redis
-* Elasticsearch
-* (Add other services like Postgres, Mailhog, etc.)
+📦 Microservices & Modules
+Service	Key Responsibilities
+video-upload-service	Handles validation, pre-upload logic, BullMQ enqueueing
+video-processing-service	Publishes & listens to AI pipeline messages
+notification-service	Sends FCM or SMS/WhatsApp alerts via Kafka
+donor-service	Manages orders and metadata
+executor-service	Tracks sacrifices, uploads, and feedback
+delivery-service	Manages driver routes, live tracking, and delivery updates
+skin-trade-service	Handles skin post-processing, storage, and sales
+admin-service	Dashboards, audit logs, and oversight tools
+🔒 Security Design
 
----
+    JWT + Refresh Tokens
 
-## 🚄 Fastify Support
+    Role-based Guards & Interceptors
 
-This project includes a `fastify` branch which provides the same feature set using NestJS with [Fastify](https://www.fastify.io/) instead of Express.
+    Helmet for HTTP headers
 
-### 📘 How to Choose
+    CSRF via double-submit cookie
 
-Refer to [`CHOOSE.md`](CHOOSE.md) to decide whether to use the default (Express) or Fastify branch. It outlines:
+    Rate limiting (@nestjs/throttler)
 
-* Pros and cons of each adapter
-* Performance and ecosystem differences
-* Compatibility notes
+    AES encryption for sensitive data
 
----
+    Data validation using class-validator
 
-## 📦 License
+    Audit trails for sensitive actions
 
-MIT © 2025 Mouloud Hasrane
+🧠 Redis Usage
+Purpose	Details
+Caching	Frequently queried entities (e.g., donors, routes)
+Pub/Sub	For WebSocket & microservice updates
+Streams	For log/event queuing
+BullMQ Backend	Job queues for video uploads, notifications, etc.
+🎯 BullMQ Jobs
+Queue Name	Description
+videoUpload	Compress, rename, and upload to Wasabi
+notification	Send FCM/WhatsApp/SMS messages
+deliveryEvents	Background delivery logs & route updates
+aiFallbacks	Manual review jobs for flagged videos
+📬 Mailing Support
 
-## 🤝 Contributing
+    Easily configured via .env
 
-Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to contribute to this project.
+    Works with SMTP, Mailgun, SendGrid
 
-## 🧑‍💻 Author
+    Used for:
+
+        Admin alerts
+
+        Manual donor communications
+
+        AI pipeline failure notifications
+
+🌐 Real-Time Support
+
+    WebSocket Gateway built-in
+
+    Redis adapter for scale-out deployments
+
+    Supports:
+
+        Live delivery tracking
+
+        Admin monitoring dashboards
+
+        Direct 1-to-1 updates (e.g., donor status)
+
+⚙️ Performance
+Area	Optimization
+Video Upload	Background jobs via BullMQ
+API Load	Fastify support available (branch)
+Storage	Wasabi SDK with chunked uploads
+CPU-bound Tasks	Offloaded to external workers
+Clustering	PM2 used for clustering via start:prod
+CDN Support	Wasabi + CloudFront planned
+📚 API Docs
+
+    Swagger via @nestjs/swagger
+
+    Hosted at /api-docs
+
+    Uses Scalar UI for enhanced interface
+
+❤️ Health Checks
+
+    /health endpoint (via Terminus)
+
+    Checks:
+
+        PostgreSQL (Prisma)
+
+        Redis
+
+        Kafka brokers
+
+        Elasticsearch (if used)
+
+🐳 Docker Compose Setup
+
+Compose file includes:
+
+    Redis
+
+    PostgreSQL
+
+    Elasticsearch (optional)
+
+    Zookeeper + Kafka
+
+    Node.js services in isolated containers
+
+🧪 Dev Scripts
+Script	Description
+start:dev	Run all services in dev
+start:prod	Start clustered server
+test	Run unit tests (Jest)
+lint	Run ESLint/Prettier
+✅ Success Metrics (Backend)
+Metric	Target
+Kafka Message Latency	< 200ms
+Upload-to-Processed Time (avg)	< 3 min
+API Response Time (p95)	< 500ms
+FCM/SMS Delivery Rate	> 99%
+AI Scene Validation Accuracy	> 95%
+Redis Cache Hit Ratio	> 90%
+📘 Notes
+
+    QR Code management was deprecated for this phase to simplify UX.
+
+    All video tracking is tied directly to the donor record ID.
+
+🧑‍💻 Author & Maintainer
 
 Mouloud Hasrane
-
-## 📬 Contact
-
-If you have any questions or suggestions, feel free to reach out via: [mouloudhasrane@gmail.com](mailto:mouloudhasrane@gmail.com)
+MIT License © 2025
+For questions or contributions, see CONTRIBUTING.md
