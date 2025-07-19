@@ -223,7 +223,7 @@ AI Scene Validation Accuracy	> 95%
 Redis Cache Hit Ratio	> 90%
 📘 Notes
 
-    QR Code management was deprecated for this phase to simplify UX.
+    QR Code management was deprecated for this phase to simplify UX and lower the cost .
 
     All video tracking is tied directly to the donor record ID.
 
