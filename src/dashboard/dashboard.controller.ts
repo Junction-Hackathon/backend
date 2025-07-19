@@ -8,10 +8,16 @@ import {
   Query,
 } from '@nestjs/common';
 import { DashboardService } from './dashboard.service';
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOkResponse,
+  ApiOperation,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { OverviewCountResponseDto } from './dtos/responses/overview-count-response.dto';
 import { WorkerDto } from './dtos/responses/worker.dto';
 import { AddWorkerDto } from './dtos/requests/add-worker.dto';
+import { ChangeWorkerStatusDto } from './dtos/requests/change-worker-status-req.dto';
 
 @Controller('dashboard')
 @ApiTags('Dashboard')
@@ -21,6 +27,10 @@ export class DashboardController {
   @Get('overview-count')
   @ApiOperation({
     summary: 'Get overview counts for donations, sacrifices, and workers',
+  })
+  @ApiQuery({
+    name: 'year',
+    required: false,
   })
   @ApiOkResponse({ type: OverviewCountResponseDto })
   overViewCount(@Query('year') year?: number) {
@@ -53,5 +63,12 @@ export class DashboardController {
   @ApiOkResponse({ type: WorkerDto })
   deleteWorker(@Param('id') workerId: string) {
     return this.dashboardService.deleteWorker(workerId);
+  }
+
+  @Post('change-worker-status')
+  @ApiOperation({ summary: "Change a worker's status" })
+  @ApiOkResponse({ type: WorkerDto })
+  changeWorkerStatus(@Body() changeWorkerStatusDto: ChangeWorkerStatusDto) {
+    return this.dashboardService.changeWorkerStatus(changeWorkerStatusDto);
   }
 }

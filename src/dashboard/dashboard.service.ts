@@ -7,6 +7,7 @@ import { UserDonationTransactionResponseDto } from 'src/donation/dto/donation-re
 import { PrismaService } from 'src/prisma/prisma.service';
 import { OverviewCountResponseDto } from './dtos/responses/overview-count-response.dto';
 import { AddWorkerDto } from './dtos/requests/add-worker.dto';
+import { ChangeWorkerStatusDto } from './dtos/requests/change-worker-status-req.dto';
 
 @Injectable()
 export class DashboardService {
@@ -73,6 +74,16 @@ export class DashboardService {
       },
     });
   }
+  changeWorkerStatus(changeWorkerStatusDto:ChangeWorkerStatusDto) {
+    return this.db.user.update({
+      where: {
+        id:changeWorkerStatusDto.workerId,
+      },
+      data: {
+        isActive: changeWorkerStatusDto.status,
+      },
+    });
+  }
   async overViewCount(year?: number): Promise<OverviewCountResponseDto> {
     const selectedYear = year ?? new Date().getFullYear();
     const [donationsCount, sacrificesCount, workersCount] = await Promise.all([
@@ -89,6 +100,7 @@ export class DashboardService {
       }),
       this.db.user.count({
         where: {
+          isActive: true,
           role: { in: ['ORGANIZER', 'DBA7'] },
         },
       }),

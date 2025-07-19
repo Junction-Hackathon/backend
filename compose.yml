@@ -1,18 +1,27 @@
 services:
   zookeeper:
     networks:
-      - kafka-shared
+      - app-network
     image: confluentinc/cp-zookeeper:7.5.0
     container_name: zookeeper
     ports:
       - "2181:2181"
     environment:
       zookeeper_client_port: 2181
+      ZOOKEEPER_CLIENT_PORT: 2181
+      
       zookeeper_tick_time: 2000
-
+    healthcheck:
+      test: ["CMD", "bash", "-c", "echo ruok | nc localhost 2181 | grep imok"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   kafka:
     networks:
-       - kafka-shared
+       - app-network
+    depends_on:
+      - zookeeper
+        
     healthcheck:
       test: ["CMD-SHELL", "kafka-topics --bootstrap-server localhost:9092 --list || exit 1"]
       interval: 10s
@@ -24,17 +33,17 @@ services:
       - "9092:9092"
       - "19092:19092"
     environment:
-      kafka_broker_id: 1
-      kafka_zookeeper_connect: zookeeper:2181
-      kafka_listener_security_protocol_map: plaintext:plaintext,plaintext_internal:plaintext,plaintext_external:plaintext
-      kafka_listeners: plaintext://0.0.0.0:9092,plaintext_internal://0.0.0.0:29092,plaintext_external://0.0.0.0:19092
-      kafka_advertised_listeners: plaintext://kafka:9092,plaintext_internal://kafka:29092,plaintext_external://10.42.0.174:19092
-      kafka_inter_broker_listener_name: plaintext_internal
-      kafka_offsets_topic_replication_factor: 1
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT,PLAINTEXT_EXTERNAL:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,PLAINTEXT_INTERNAL://0.0.0.0:29092,PLAINTEXT_EXTERNAL://0.0.0.0:19092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_INTERNAL://kafka:29092,PLAINTEXT_EXTERNAL://192.168.1.104:19092 
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT_INTERNAL
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
   kafka-ui:
     networks:
-      -  kafka-shared
+      - app-network
     image: provectuslabs/kafka-ui:latest
     container_name: kafka-ui
     ports:
@@ -82,20 +91,19 @@ services:
     image: postgres:15-alpine
     restart: unless-stopped
     environment:
-      - postgres_password=pass
-      - postgres_user=dba7
-      - postgres_db=main
+      - POSTGRES_PASSWORD=pass
+      - POSTGRES_USER=dba7
+      - POSTGRES_DB=main
     expose:
       - 5432
     ports:
       - 5432:5432
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -u dba7 -d main']
+      test: ['CMD-SHELL', 'pg_isready -U dba7 -d main']
       interval: 5s
       timeout: 5s
       retries: 10
       start_period: 20s
-
   redis:
     networks:
       - app-network
@@ -115,7 +123,7 @@ services:
 
   search:
     networks:
-      - app-network
+       - app-network
     image: docker.elastic.co/elasticsearch/elasticsearch:9.0.2
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:9200']
@@ -131,7 +139,5 @@ services:
       - '9200:9200'
 
 networks:
-  kafka-shared:
-    external: true
-  app-network:
-    driver: bridge
+    app-network:
+      driver: bridge

@@ -12,7 +12,7 @@ import { AiVideoProcessorHandler } from './ai-video-upload';
         options: {
           client: {
             clientId: 'VID_CLIENT',
-            brokers: ['kafka:9092'],
+            brokers: ['kafka-21cce1f9-esi-5062.h.aivencloud.com:13752'],
           },
 
           consumer: {

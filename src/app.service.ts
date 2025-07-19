@@ -7,6 +7,6 @@ export class AppService {
    * @returns {string} The "Hello World!" message.
    */
   getHello(): string {
-    return 'Hello World!';
+    return 'Api here navigate to api-docs for documenation!';
   }
 }
