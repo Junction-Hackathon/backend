@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { UserDonationTransaction } from '@prisma/client';
+import { User, UserDonationTransaction } from '@prisma/client';
 import { has } from 'lodash';
 import { registerDto } from 'src/authentication/dtos/requests/register.dto';
 import { generateHash } from 'src/common/utils/authentication/bcrypt.utils';
 import { UserDonationTransactionResponseDto } from 'src/donation/dto/donation-response.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { OverviewCountResponseDto } from './dtos/responses/overview-count-response.dto';
+import { AddWorkerDto } from './dtos/requests/add-worker.dto';
 
 @Injectable()
 export class DashboardService {
@@ -43,14 +45,14 @@ export class DashboardService {
 
     return donationsByMonth;
   }
-  getCurrentWorkers() {
+  getCurrentWorkers(): Promise<User[]> {
     return this.db.user.findMany({
       where: {
         role: 'DBA7',
       },
     });
   }
- async addWorker(data: Omit<registerDto, 'confirmPassowrd'>) {
+  async addWorker(data: AddWorkerDto): Promise<User> {
     const hashedPassword = await generateHash(data.password);
     const { firstName, lastName, email, phoneNumber } = data;
     return this.db.user.create({
@@ -64,24 +66,25 @@ export class DashboardService {
       },
     });
   }
-  deleteWorker(workerId: string) {
+  deleteWorker(workerId: string): Promise<User> {
     return this.db.user.delete({
       where: {
         id: workerId,
       },
     });
   }
-  async overViewCount(year?: number) {
+  async overViewCount(year?: number): Promise<OverviewCountResponseDto> {
     const selectedYear = year ?? new Date().getFullYear();
     const [donationsCount, sacrificesCount, workersCount] = await Promise.all([
       this.db.userDonationTransaction.count({
         where: {
-          year,
+          year: selectedYear,
         },
       }),
       this.db.sacrifice.count({
         where: {
           status: 'delivred',
+          year: selectedYear,
         },
       }),
       this.db.user.count({
@@ -89,8 +92,12 @@ export class DashboardService {
           role: { in: ['ORGANIZER', 'DBA7'] },
         },
       }),
-      Promise.resolve(892),
-      Promise.resolve(47),
     ]);
+
+    return {
+      donationsCount,
+      sacrificesCount,
+      workersCount,
+    };
   }
 }
