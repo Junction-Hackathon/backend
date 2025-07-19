@@ -48,6 +48,7 @@ export class AuthenticationService {
    */
   async issueTokens(user: User): Promise<result<AuthResponseDto, string>> {
     try {
+      this.logger.log("Generationg tokens")
       const { id, email } = user;
       const accessTokenPayload = { sub: id, email };
       const refreshTokenPayload = { sub: id, email, type: 'refresh' };

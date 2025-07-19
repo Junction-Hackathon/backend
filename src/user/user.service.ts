@@ -27,18 +27,20 @@ export class UserService {
     const createdUser = await this.prismaService.user.create({
       data: {
         ...rest,
-        role:rest.role,
+        role: rest.role,
         password: hashedPassword,
       },
     });
     return createdUser;
   }
-  findByEmail(email: string): Promise<User | null> {
-    return this.prismaService.user.findUnique({
+  async findByEmail(email: string): Promise<User | null> {
+    const user = await this.prismaService.user.findUnique({
       where: {
         email,
       },
     });
+    console.log(await this.prismaService.user.findMany());
+    return user || null;
   }
   findById(id: string): Promise<User | null> {
     return this.prismaService.user.findUnique({

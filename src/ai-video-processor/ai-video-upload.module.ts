@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { videoProcessorName } from 'src/sacrifice-video/constants';
+import { AiVideoProcessorHandler } from './ai-video-upload';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { videoProcessorName } from 'src/sacrifice-video/constants';
             clientId: 'VID_CLIENT',
             brokers: ['kafka:9092'],
           },
+
           consumer: {
             allowAutoTopicCreation: true,
             groupId: 'VID_CONSUMERS',
@@ -21,6 +23,7 @@ import { videoProcessorName } from 'src/sacrifice-video/constants';
       },
     ]),
   ],
-  exports: [ClientsModule],
+  providers: [AiVideoProcessorHandler],
+  exports: [ClientsModule, AiVideoProcessorHandler],
 })
-export class AiVideoModule{}
+export class AiVideoModule {}

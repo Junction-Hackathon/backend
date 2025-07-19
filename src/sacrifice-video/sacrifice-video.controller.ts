@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Post,
@@ -13,8 +14,9 @@ import { UploadVideoDto } from './dtos/req/upload-vid.dto';
 import { ApiBody, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import { USER } from 'src/authentication/decorators/user.decorartor';
 import { UserRoleGuard } from 'src/authentication/guards/userRole.Guard';
+import { memoryStorage } from 'multer';
 
-@UseGuards( AcessTokenGuard,UserRoleGuard)
+@UseGuards(AcessTokenGuard)
 @Controller('sacrifice-video')
 export class SacrificeVideoController {
   constructor(private readonly sacrificeVideoService: SacrificeVideoService) {}
@@ -28,13 +30,16 @@ export class SacrificeVideoController {
   @ApiBody({
     type: UploadVideoDto,
   })
-  @UseInterceptors(FileInterceptor('video'))
+  @UseInterceptors(FileInterceptor('video', { storage: memoryStorage() }))
   @Post()
   startProcessingVideo(
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile() video: Express.Multer.File,
     @USER('id') userId: string,
     @Body() data: UploadVideoDto,
   ) {
-    return this.sacrificeVideoService.startAiProcessing(file, userId, data);
+    if (!video) {
+      throw new BadRequestException('no file was uploaded');
+    }
+    return this.sacrificeVideoService.startAiProcessing(video, userId, data);
   }
 }

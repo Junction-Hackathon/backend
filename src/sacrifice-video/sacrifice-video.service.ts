@@ -1,4 +1,4 @@
-import {  Injectable } from '@nestjs/common';
+import {  Injectable, Logger } from '@nestjs/common';
 
 import { InjectQueue } from '@nestjs/bullmq';
 import { QUEUE_NAME } from 'src/common/constants/queues';
@@ -10,6 +10,7 @@ import { UploadVideoDto } from './dtos/req/upload-vid.dto';
 
 @Injectable()
 export class SacrificeVideoService {
+  logger=new Logger(SacrificeVideoService.name)
   constructor(
     @InjectQueue(QUEUE_NAME.FILE) private readonly FileQueue: Queue,
     private readonly prismaService: PrismaService,
@@ -35,6 +36,7 @@ export class SacrificeVideoService {
         donor: true,
       },
     });
+    this.logger.log(video)
     const payload: SendFileDto = {
       fileBuffer: video.buffer.toString('base64'),
       year: new Date().getFullYear(),
@@ -42,7 +44,7 @@ export class SacrificeVideoService {
       donor: updatedSac.donor,
     };
 
-    const job = await this.FileQueue.add(FILE_JOBS.SEND_FILE, payload);
+    const job = await this.FileQueue.add(FILE_JOBS.UPLOAD_SAC_VID, payload);
     return {
       jobId: job.id,
       message: 'Queued Succefully',

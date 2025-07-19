@@ -15,11 +15,14 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
   }
   async validate(req:Request,email: string, password: string): Promise<User> {
     
+    console.log(email+password)
     const result = await this.authenticationService.validateUser(
       email,
       password,
     );
 
+    console.log(result);
+    
     if (result.ok) {
       return result.value; // Return the user object if validation is successful
     } else {

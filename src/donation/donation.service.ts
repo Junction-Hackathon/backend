@@ -11,21 +11,11 @@ export class DonationService {
   ) {}
   create(createDonationDto: CreateDonationDto, userId: string) {
     return this.prismaService.$transaction(async (tx) => {
-      const transactionRecord = this.paymentService.checkout(
+      const transaction = await this.paymentService.checkout(
         createDonationDto.quanitity,
       );
-      const transaction = await tx.transaction.create({
-        data: {
-          amount: transactionRecord.totalPrice,
-          status: 'succeeded',
 
-          gateway: 'CIB',
-          paymentMethod: 'DAHABIA',
-
-          currency: 'DZD',
-        },
-      });
-      return await this.prismaService.userDonationTransaction.create({
+      return await tx.userDonationTransaction.create({
         data: {
           donorId: userId,
           qty: createDonationDto.quanitity,

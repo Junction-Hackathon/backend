@@ -17,6 +17,8 @@ import { SacrificeVideoModule } from './sacrifice-video/sacrifice-video.module';
 import { SacrificerSacrificesCountModule } from './sacrificer-sacrifices-count/sacrificer-sacrifices-count.module';
 import { DonationModule } from './donation/donation.module';
 import { TrackingModule } from './tracking/tracking.module';
+import { AiVideoModule } from './ai-video-processor/ai-video-upload.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 @Module({
   imports: [
     ThrottlerModule.forRoot({
@@ -48,6 +50,8 @@ import { TrackingModule } from './tracking/tracking.module';
     QueueModule,
     DonationModule,
     TrackingModule,
+    AiVideoModule,
+    DashboardModule
   ],
   controllers: [AppController],
   providers: [AppService],

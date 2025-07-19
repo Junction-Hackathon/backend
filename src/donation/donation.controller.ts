@@ -17,7 +17,7 @@ import {
   ApiParam,
   ApiQuery,
 } from '@nestjs/swagger';
-import { DonationResponseDto } from './dto/donation-response.dto';
+import { UserDonationTransactionResponseDto } from './dto/donation-response.dto';
 
 @Controller('donation')
 export class DonationController {
@@ -28,7 +28,7 @@ export class DonationController {
   @ApiResponse({
     status: 201,
     description: 'The donation has been successfully created.',
-    type: DonationResponseDto,
+    type: UserDonationTransactionResponseDto,
   })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   create(
@@ -48,7 +48,7 @@ export class DonationController {
   @ApiResponse({
     status: 200,
     description: 'Returns a list of donations for the specified year.',
-    type: [DonationResponseDto],
+    type: [UserDonationTransactionResponseDto],
   })
   findAll(@Query('year', ParseIntPipe) year: number) {
     return this.donationService.findAll(year);
@@ -60,7 +60,7 @@ export class DonationController {
   @ApiResponse({
     status: 200,
     description: 'Returns the donation with the specified ID.',
-    type: DonationResponseDto,
+    type: UserDonationTransactionResponseDto,
   })
   @ApiResponse({ status: 404, description: 'Donation not found.' })
   findOne(@Param('id') id: string) {

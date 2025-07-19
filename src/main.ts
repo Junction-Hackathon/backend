@@ -10,6 +10,7 @@ import { AppModule } from './app.module';
 import { LoggerInterceptor } from './global/interceptors/logger.interceptor';
 import { ExtendedRequest } from './authentication/types/extended-req.type';
 import { Request } from 'express';
+import { PrismaExceptionFilter } from './common/filters/prisma.filter';
 async function bootstrap() {
   // the cors will be changed to the front end url  in production environnement
   const app = await NestFactory.create(AppModule, {
@@ -71,6 +72,7 @@ async function bootstrap() {
   );
 
   //FILTERS
+  app.useGlobalFilters(new PrismaExceptionFilter())
   // app.useGlobalFilters(new CustomWsExceptionFilter());
   //app.useGlobalFilters(new ElasticSearchExceptionFilter()); //TODO:figure out what error to catch
   //--

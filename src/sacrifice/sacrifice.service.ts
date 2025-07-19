@@ -12,7 +12,13 @@ export class SacrificeService {
   }
 
   async findAll() {
-    return this.prisma.sacrifice.findMany();
+    return this.prisma.sacrifice.findMany({
+      include: {
+        donor: true,
+        sacrificer: true,
+        sacrificeVideo: true,
+      },
+    });
   }
 
   async findOne(id: string) {
@@ -27,12 +33,14 @@ export class SacrificeService {
   }
 
   async getCurrentExcutorDonators(excutorId: string) {
+    console.log(excutorId)
     return this.prisma.sacrifice.findMany({
       where: {
         sacrificedById: excutorId,
       },
       include: {
         donor: true,
+        currentLocation:true
       },
     });
   }

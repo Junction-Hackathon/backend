@@ -17,6 +17,7 @@ export class LoggerInterceptor implements NestInterceptor {
     console.log(
       `🚀 Request started from IP: ${userIp}, Path: ${requestPath}, Method: ${requestMethod} at ${new Date(startTime).toISOString()}`,
     );
+    console.log(request.body)
     return next.handle().pipe(
       tap(() => {
         const endTime = Date.now();
