@@ -170,7 +170,7 @@ API Load	Fastify support available (branch)
 Storage	Wasabi SDK with chunked uploads
 CPU-bound Tasks	Offloaded to external workers
 Clustering	PM2 used for clustering via start:prod
-CDN Support	Wasabi + CloudFront planned
+Cloudinary cdn 
 📚 API Docs
 
     Swagger via @nestjs/swagger
