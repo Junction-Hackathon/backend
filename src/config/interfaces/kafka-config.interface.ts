@@ -5,6 +5,7 @@ export interface KafkaConfig {
     mechanism: string;
     username: string;
     password: string;
+
   };
   ssl?: boolean;
   consumer?: {

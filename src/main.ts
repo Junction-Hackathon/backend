@@ -17,6 +17,7 @@ import {
   Transport,
 } from '@nestjs/microservices';
 import { ConfigService } from '@nestjs/config';
+import { AppConfig } from './config/interfaces/app-config.interface';
 async function bootstrap() {
   // the cors will be changed to the front end url  in production environnement
   const app = await NestFactory.create(AppModule, {
@@ -88,18 +89,19 @@ async function bootstrap() {
       transport: Transport.KAFKA,
       options: {
         client: {
-          brokers: [configService.get<string>('KAFKA_BROKER')],
+          brokers:
+            configService.get<AppConfig['kafka']['brokers']>('kafka.brokers')!,
 
-          sasl: {
-            mechanism: configService.get<string>('KAFKA_MECHANISM'),
-            username: configService.get('KAFKA_USERNAME'),
-            password: configService.get('KAFKA_PASSWORD'),
-          },
-          ssl: true,
+          clientId:
+            configService.get<AppConfig['kafka']['clientId']>(
+              'kafka.clientId',
+            )!,
+          //NOTE :to be configured later with correct provider
+          // sasl: configService.get<AppConfig['kafka']['sasl']>('kafka.sasl')!,
+          ssl: configService.get<AppConfig['kafka']['ssl']>('kafka.ssl')!,
         },
-        consumer: {
-          groupId: configService.get('KAFKA_GROUP_ID'),
-        },
+        consumer:
+          configService.get<AppConfig['kafka']['consumer']>('kafka.consumer')!,
       },
     }),
     inject: [ConfigService],
