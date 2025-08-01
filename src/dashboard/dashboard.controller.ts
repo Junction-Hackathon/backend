@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { DashboardService } from './dashboard.service';
 import {
@@ -18,9 +19,11 @@ import { OverviewCountResponseDto } from './dtos/responses/overview-count-respon
 import { WorkerDto } from './dtos/responses/worker.dto';
 import { AddWorkerDto } from './dtos/requests/add-worker.dto';
 import { ChangeWorkerStatusDto } from './dtos/requests/change-worker-status-req.dto';
+import { AcessTokenGuard } from 'src/authentication/guards/access-token.guard';
 
 @Controller('dashboard')
 @ApiTags('Dashboard')
+@UseGuards(AcessTokenGuard)
 export class DashboardController {
   constructor(private readonly dashboardService: DashboardService) {}
 

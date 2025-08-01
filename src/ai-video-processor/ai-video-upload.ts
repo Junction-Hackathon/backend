@@ -8,9 +8,10 @@ import {
 import { videoDoneProcessingDto } from './dtos/video-process-done.dto';
 import { plainToClass } from 'class-transformer';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Inject } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { videoProcessorName } from 'src/sacrifice-video/constants';
 
+@Injectable()
 export class AiVideoProcessorHandler {
   constructor(
     private readonly prismaService: PrismaService,

@@ -11,6 +11,12 @@ import { LoggerInterceptor } from './global/interceptors/logger.interceptor';
 import { ExtendedRequest } from './authentication/types/extended-req.type';
 import { Request } from 'express';
 import { PrismaExceptionFilter } from './common/filters/prisma.filter';
+import {
+  AsyncOptions,
+  MicroserviceOptions,
+  Transport,
+} from '@nestjs/microservices';
+import { ConfigService } from '@nestjs/config';
 async function bootstrap() {
   // the cors will be changed to the front end url  in production environnement
   const app = await NestFactory.create(AppModule, {
@@ -72,10 +78,33 @@ async function bootstrap() {
   );
 
   //FILTERS
-  app.useGlobalFilters(new PrismaExceptionFilter())
+  app.useGlobalFilters(new PrismaExceptionFilter());
   // app.useGlobalFilters(new CustomWsExceptionFilter());
   //app.useGlobalFilters(new ElasticSearchExceptionFilter()); //TODO:figure out what error to catch
-  //--
+  //MicroService Config for kafka
+  //ADD those later
+  app.connectMicroservice<AsyncOptions<MicroserviceOptions>>({
+    useFactory: (configService: ConfigService) => ({
+      transport: Transport.KAFKA,
+      options: {
+        client: {
+          brokers: [configService.get<string>('KAFKA_BROKER')],
+
+          sasl: {
+            mechanism: configService.get<string>('KAFKA_MECHANISM'),
+            username: configService.get('KAFKA_USERNAME'),
+            password: configService.get('KAFKA_PASSWORD'),
+          },
+          ssl: true,
+        },
+        consumer: {
+          groupId: configService.get('KAFKA_GROUP_ID'),
+        },
+      },
+    }),
+    inject: [ConfigService],
+  });
+
   await app.startAllMicroservices();
   app.enableShutdownHooks();
   //Those to are for handling the shutdown of the server
