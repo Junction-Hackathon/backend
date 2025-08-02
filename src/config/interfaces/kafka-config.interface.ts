@@ -1,6 +1,6 @@
 export interface KafkaConfig {
   brokers: string[];
-  clientId: string;
+  clientId?: string;
   sasl?: {
     mechanism: string;
     username: string;

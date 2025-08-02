@@ -2,14 +2,11 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { apiReference } from '@scalar/nestjs-api-reference';
-import session from 'express-session';
 import helmet from 'helmet';
-import passport from 'passport';
 import { doubleCsrf, DoubleCsrfConfigOptions } from 'csrf-csrf';
 import { AppModule } from './app.module';
 import { LoggerInterceptor } from './global/interceptors/logger.interceptor';
 import { ExtendedRequest } from './authentication/types/extended-req.type';
-import { Request } from 'express';
 import { PrismaExceptionFilter } from './common/filters/prisma.filter';
 import {
   AsyncOptions,
@@ -84,29 +81,21 @@ async function bootstrap() {
   //app.useGlobalFilters(new ElasticSearchExceptionFilter()); //TODO:figure out what error to catch
   //MicroService Config for kafka
   //ADD those later
-  app.connectMicroservice<AsyncOptions<MicroserviceOptions>>({
-    useFactory: (configService: ConfigService) => ({
-      transport: Transport.KAFKA,
-      options: {
-        client: {
-          brokers:
-            configService.get<AppConfig['kafka']['brokers']>('kafka.brokers')!,
-
-          clientId:
-            configService.get<AppConfig['kafka']['clientId']>(
-              'kafka.clientId',
-            )!,
-          //NOTE :to be configured later with correct provider
-          // sasl: configService.get<AppConfig['kafka']['sasl']>('kafka.sasl')!,
-          ssl: configService.get<AppConfig['kafka']['ssl']>('kafka.ssl')!,
-        },
-        consumer:
-          configService.get<AppConfig['kafka']['consumer']>('kafka.consumer')!,
+  const configService = app.get(ConfigService);
+  app.connectMicroservice({
+    transport: Transport.KAFKA,
+    options: {
+      client: {
+        brokers:
+          configService.get<AppConfig['kafka']['brokers']>('kafka.brokers')!,
+        clientId:
+          configService.get<AppConfig['kafka']['clientId']>('kafka.clientId')!,
+        ssl: configService.get<AppConfig['kafka']['ssl']>('kafka.ssl')!,
       },
-    }),
-    inject: [ConfigService],
+      consumer:
+        configService.get<AppConfig['kafka']['consumer']>('kafka.consumer')!,
+    },
   });
-
   await app.startAllMicroservices();
   app.enableShutdownHooks();
   //Those to are for handling the shutdown of the server
